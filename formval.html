@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Form Validation Vue js</title>
+	<link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
+
+</head>
+<body>
+<div class="card" style="max-width: 540px; margin-top: 20px; margin-left: 30% ">
+		<div class="card-header">
+			<h3>Pendaftaran</h3>
+			<div class="card-body">
+				<form class="needs-validation" id="validated-form">
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label for="firstName">Nama Depan</label>
+							<input type="text" class="form-control" name="firstName" placeholder="" value="" required>
+							<span class="text-danger" v-if="validationErrors.firstName" v-text="validationErrors.firstName"></span>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label for="lastName">Nama Belakang</label>
+							<input type="text" class="form-control" name="lastName" placeholder="" value="" required>
+							<span class="text-danger" v-if="validationErrors.lastName" v-text="validationErrors.lastName"></span>
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="username">Username</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text">@</span>
+							</div>
+							<input type="text" class="form-control" name="username" placeholder="Username" required>
+							<span class="text-danger" v-if="validationErrors.username" style="width: 100%;" v-text="validationErrors.username"></span>
+						</div>
+					</div>
+					<div class="mb-3">
+						<label for="email">Email <span class="text-muted">(Optional)</span></label>
+						<input type="email" class="form-control" name="email" placeholder="you@example.com">
+						<div class="text-danger" v-if="validationErrors.email" style="width: 100%;">
+							<span v-text="validationErrors.email"></span>
+						</div>
+					</div>
+
+					<!--  Rest of form hidden for space    -->
+
+					<button class="btn btn-success btn-lg btn-block" type="submit"
+					@click.prevent="submitForm()">KIRIM</button>
+				</form>
+
+
+			</div>
+		</div>
+	</div>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script>
+		const vueApp = new Vue({
+			el: '#validated-form',
+			data: function () {
+				return {
+					validationErrors: {
+						firstName: null,
+						lastName: null,
+						username: null,
+						email: null,
+						address: null
+					}
+				}
+			},
+			methods: {
+				submitForm () {
+					if (this.validateForm()) {
+						alert('Form Anda Terkirim')
+                //submit form to backend
+            }
+        },
+        validateForm (formId = 'validated-form', errorObjectName = 'validationErrors') {
+    var nodes = document.querySelectorAll(`#${formId} :invalid`);
+    var vm = this; //current vue instance;
+
+    Object.keys(this[errorObjectName]).forEach(key => {
+        this[errorObjectName][key] = null
+    });
+
+    if (nodes.length > 0) {
+        nodes.forEach(node => {
+            if (node.title) {
+                this[errorObjectName][node.name] = node.title;
+            }
+            else {
+                this[errorObjectName][node.name] = node.validationMessage;
+            }
+
+            node.addEventListener('change', function (e) {
+                vm.validateForm(formId, errorObjectName);
+            });
+        });
+
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+    }
+});
+</script>
+</body>
+</html>
